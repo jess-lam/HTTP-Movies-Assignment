@@ -5,11 +5,20 @@ import MovieList from "./Movies/MovieList";
 import Movie from "./Movies/Movie";
 import UpdateForm from "./UpdateForm";
 
-const App = () => {
+const App = (props) => {
   const [savedList, setSavedList] = useState([]);
   const [movies, setMovies] = useState([]);
 
   const addToSavedList = movie => {
+
+    // let newSavedList = [...savedList];
+
+    // for(let i=0; i < newSavedList.length; i++) {
+    //   if (movie.id === newSavedList[i].id) {
+    //     //replace old copy of movie with new copy
+    //     newSavedList.splice(i, 1, movie)
+    //   }
+    // }
     setSavedList([...savedList, movie]);
   };
 

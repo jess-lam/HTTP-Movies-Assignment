@@ -9,6 +9,20 @@ export default class Movie extends React.Component {
     };
   }
 
+  deleteItemId = this.props.match.params.id
+deleteItem = id => {
+  // e.preventDefault();
+  axios
+  .delete(`http://localhost:5001/api/movies/${id}`)
+  .then(res => {
+    console.log(res)
+    this.props.addToSavedList(res.data)
+    this.props.history.push('/')
+  })
+  .catch(err => {
+    console.log("error:", err)
+  })
+}
   componentDidMount() {
     this.fetchMovie(this.props.match.params.id);
   }
@@ -21,7 +35,7 @@ export default class Movie extends React.Component {
 
   fetchMovie = id => {
     axios
-      .get(`http://localhost:5000/api/movies/${id}`)
+      .get(`http://localhost:5001/api/movies/${id}`)
       .then(res => this.setState({ movie: res.data }))
       .catch(err => console.log(err.response));
   };
@@ -36,6 +50,10 @@ export default class Movie extends React.Component {
       return <div>Loading movie information...</div>;
     }
 
+    //if you see "EADDR, server is already being listened"
+    //we need to follow in order where the errors are coming from and in the order of when they are being read by JS, NOT in the order of how we wrote them
+    //we learned that state is asychronous, and to check in the dev tools whether they have been updated or not
+    //if app is broken, setState takes a second argument, Callback function, that you can console log state in there
     return (
       <div className="save-wrapper">
         <MovieCard movie={this.state.movie} />
@@ -44,6 +62,9 @@ export default class Movie extends React.Component {
         </div>
         <button className="update-button" onClick={() => this.props.history.push(`/update-movie/${this.state.movie.id}`)}>
           Update
+        </button>
+        <button onClick={() => this.deleteItem(this.deleteItemId)}>
+          Delete
         </button>
       </div>
     );

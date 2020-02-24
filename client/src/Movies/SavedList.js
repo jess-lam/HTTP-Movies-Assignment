@@ -13,7 +13,7 @@ export default class SavedList extends Component {
           return (
             <NavLink
               to={`/movies/${movie.id}`}
-              key={movie.id}
+              key={Math.random()}
               activeClassName="saved-active"
             >
               <span className="saved-movie">{movie.title}</span>

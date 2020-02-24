@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const initialMovie = {
+    id: "",
     title: "",
     director: "",
     metascore: "",
@@ -9,29 +10,39 @@ const initialMovie = {
 };
 
 const UpdateForm = props => {
-    const [movie, setMovie] = useState()
-    console.log(props);
-    console.log("dog");
-    // debugger
-    useEffect(() => {
-        const selectedMovie = props.movies.find(movie => {
-            return movie.id.toString() === props.match.params.id
-        }); 
-        console.log(selectedMovie);
-        if (selectedMovie) {
-            setMovie(selectedMovie);
-        }
-    }, [props.match.params.id]);
+
+    const initialMovie = {
+        id: Number(props.match.params.id),
+        title: "",
+        director: "",
+        metascore: "",
+        stars: []
+    };
+
+    const [movie, setMovie] = useState(initialMovie)
+    // const [update, setUpdate] = useState()
+
 
     // useEffect(() => {
-    //     const selectedMovie = props.movies.find(movie => {
-    //         return movie.id === props.match.params.id
+    //     const selectedMovie = props.movies.find(movieparam => {
+    //         console.log(movieparam);
+    //         return movieparam.id.toString() === props.match.params.id
     //     }); 
     //     console.log(selectedMovie);
     //     if (selectedMovie) {
     //         setMovie(selectedMovie);
     //     }
-    // }, [movie, props.savedList, props.match.params.id]);
+    // }, []);
+
+    useEffect(() => {
+        const selectedMovie = props.movies.find(movie => {
+            return movie.id === props.match.params.id
+        }); 
+        console.log(selectedMovie);
+        if (selectedMovie) {
+            setMovie(selectedMovie);
+        }
+    }, [props.savedList, props.match.params.id]);
 
     const changeHandler = e => {
         e.persist();
@@ -40,18 +51,29 @@ const UpdateForm = props => {
             value = parseInt(value, 10)
         }
 
+        if (e.target.name === "stars") {
+            value = value.split(",")
+        }
+
         setMovie({
             ...movie,
             [e.target.name]: value
         })
+
+
+        // setUpdate({
+        //     ...update,
+        //     [e.target.name]: value
+        // })
     };
 
     const handleSubmit = e => {
         e.preventDefault();
         axios
-        .put(`http://localhost:5000/api/movies/${movie.id}}`, movie)
+        .put(`http://localhost:5001/api/movies/${movie.id}`, movie)
         .then(res => {
             props.addToSavedList(res.data)
+            props.history.push('/')
         })
         .catch(err => {
             console.log(err);
@@ -95,7 +117,7 @@ const UpdateForm = props => {
         <div className="baseline" />
 
         <input
-          type="string"
+          type="text"
           name="stars"
           onChange={changeHandler}
           placeholder="Stars"
